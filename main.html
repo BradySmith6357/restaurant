@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"  ng-app="RestaurantApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Cappelli's</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/carousel.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Merienda+One' rel='stylesheet' type='text/css'>
+
+  </head>
+
+  <body ng-controller="controllerRestaurant">
+    <!-- Carousel
+    ================================================== -->
+    <div class="carousel slide">
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="http://static1.squarespace.com/static/5644c6ebe4b021eb44342670/t/56df4d76f850826a229086a6/1457474943242/wood-fired+oven+shot.png?format=1500w" alt="First slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>{{restaurantDeets.name}}</h1>
+              <h3>{{restaurantDeets.description}}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.carousel -->
+
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container marketing">
+
+      <!-- Three columns of text below the carousel -->
+      <div class="row">
+        <div class="col-lg-4">
+          <img class="img-circle" src="http://connectnigeria.com/articles/wp-content/uploads/2013/04/Red-Wine.png" alt="drink image" width="140" height="140">
+          <h2>House Beverages</h2>
+          <p>American's love pizza and beer. Italians love wine and food. We provide the best of both worlds.</p>
+          <p><a class="btn btn-default" href="#beverages" role="button">View drinks &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="img-circle" src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/user-group-256.png" alt="user Pref" width="140" height="140">
+          <h2>Order Preferences</h2>
+          <p>Do you have any dietary preferences we should know about?  Please fill out your information here:</p>
+          <p><a class="btn btn-default userBtn" role="button" ng-click="messageList()">{{userMessage}} &raquo;</a></p>
+            <div class="diet" ng-show="listAppearWhenClicked">
+              <input class="text" type="text" placeholder="Name"ng-model="diet.name"><br>
+              <input class="text" type="text" placeholder="Address" ng-model="diet.address" ><br>
+              <input class="text" type="text" placeholder="Phone" ng-model="diet.phone" ><br>
+              <form name="form" ng-submit="saveCusty()">
+                <input ng-model="diet.vegan" class="checkbox" type="checkbox" value="vegan">Vegan<br>
+                <input ng-model="diet.glutenFree" class="checkbox" type="checkbox" value="glutenFree">Gluten Free<br>
+                <input ng-model="diet.citrusFree" class="checkbox" type="checkbox" value="citrusFree">Citrus Free<br>
+                  <input ng-click="toolTipper()" type="submit" value="Submit Your Preferences"> 
+                  <input ng-click="resetForm()" type="button" value="Reset">
+              </form>
+            </div>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="img-circle" src="http://s3-media2.fl.yelpcdn.com/bphoto/tlz1-fq4kPsS2ihulUL9Rw/348s.jpg" alt="food image" width="140" height="140">
+          <h2>Food Items</h2>
+          <p>We focus on pizza, because we know pizza. If you don't want authentic neapolitan pies, you came to the wrong place.</p>
+          <p><a class="btn btn-default" href="#food" role="button">View menu &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+
+
+      <!-- START THE FEATURETTES -->
+
+      <hr class="featurette-divider">
+
+      <div class="row featurette">
+        <div class="col-md-7">
+          <a name="beverages"></a><h2 class="featurette-heading">House Beverages</h2>
+            <dl ng-repeat="bev in menuComplete.drinks" class="drinkMenu">
+              <dt class="menuItems">{{bev.name}}, ${{bev.price}}</dt>
+              <dd class="description">{{bev.description}}</dd>
+                <dd class="details" ng-repeat="ingredient in bev.contents">{{ingredient.name}}</dd>
+                <dd class="add"><button type="button" ng-click="addItem(bev)">Add to Cart</button><span class="message" ng-show="bev.activeToolTip">WARNING: THIS DOES NOT MEET YOUR FOOD PREFERENCES</span></dd>
+            </dl>
+        </div>
+        <div class="col-md-5">
+          <img class="featurette-image img-responsive center-block" src="http://www.richmondmarketing.com/wp-content/uploads/2014/10/Peroni-Pint.jpg" alt="drink menu image">
+        </div>
+      </div>
+
+      <hr class="featurette-divider">
+
+      <div class="row featurette">
+        <div class="col-md-7 col-md-push-5">
+          <a name="food"></a><h2 class="featurette-heading">Pizza</h2>
+            <dl ng-repeat="food in menuComplete.foods" class="foodMenu">
+              <dt class="menuItems">{{food.name}}, {{food.price}}</dt>
+              <dd class="description">{{food.description}}</dd>
+              <dd class="details" ng-repeat="ingredient in food.contents">{{ingredient.name}},</dd>
+              <dd class="add"><button type="checkbox" ng-click="addItem(food)">Add to Cart</button><span class="message" ng-show="food.activeToolTip">WARNING: THIS DOES NOT MEET YOUR FOOD PREFERENCES</span></dd>
+            </dl>
+        </div>
+        <div class="col-md-5 col-md-pull-7">
+          <img class="featurette-image img-responsive center-block" src="http://s3-media2.fl.yelpcdn.com/bphoto/tlz1-fq4kPsS2ihulUL9Rw/348s.jpg" alt="food image">
+        </div>
+      </div>
+
+      <hr class="featurette-divider">
+    </div>
+      <!-- /END THE FEATURETTES -->
+    
+      <div class="cart">
+        <h2>Your total order price is: <br>${{rounded}}</h2>
+      </div>
+
+    <!-- /.container -->
+
+      <!-- FOOTER -->
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>&copy; 2015 {{restaurantDeets.owners}} &middot; {{restaurantDeets.phone}} &middot; {{restaurantDeets.email}} &middot; {{restaurantDeets.address}}</p>
+      </footer>
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.9/angular.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+  </body>
+</html>
